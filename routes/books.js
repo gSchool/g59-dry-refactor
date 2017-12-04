@@ -11,7 +11,10 @@ router.get('/', (req, res, next) => {
 })
 
 router.get('/:id', (req, res, next) => {
-  find(req.params.id)
+  return Promise
+    .resolve(req.params)
+    .then(validateId)
+    .then(find)
     .then(data => res.send(data))
     .catch(err => res.status(500).send(err))
 })
@@ -22,8 +25,11 @@ router.post('/', (req, res, next) => {
     .catch(err => res.status(500).send(err))
 })
 
-router.patch('/:id', (req, res, next) => {
-  update(req.params.id)
+router.put('/:id', (req, res, next) => {
+  return Promise
+    .resolve(req.params)
+    .then(validateId)
+    .then(update)
     .then(book => {
       if (!book) return next()
       res.send(book)
@@ -33,7 +39,9 @@ router.patch('/:id', (req, res, next) => {
 
 router.delete('/:id', (req, res, next) => {
   let book = null
-  validateId(req.params)
+  return Promise
+    .resolve(req.params)
+    .then(validateId)
     .then(find)
     .then(data => {
       book = data
